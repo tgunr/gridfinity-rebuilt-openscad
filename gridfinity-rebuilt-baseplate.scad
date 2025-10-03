@@ -89,8 +89,14 @@ hole_options = bundle_hole_options(
 
 // ===== IMPLEMENTATION ===== //
 
+// Debug logging for distancex parameter validation
+echo(str("DEBUG distancex - Input value: '", distancex, "' (type: ", type(distancex), ")"));
+echo(str("DEBUG distancex - Numeric value: ", num(distancex)));
+echo(str("DEBUG distancex - Is zero: ", distancex == 0));
+echo(str("DEBUG distancex - fitx interaction: ", fitx));
+
 color("tomato")
-gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom);
+gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom, expansion_mode_x, expansion_mode_y);
 
 // ===== CONSTRUCTION ===== //
 
