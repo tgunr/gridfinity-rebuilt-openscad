@@ -44,7 +44,7 @@ class TestBasePlateHoles:
         vars["style_hole"] = 0
         vars["chamfer_holes"] = False
         vars["crush_ribs"] = False
-        openscad_runner.create_image([], Path('magnet_holes_bottom.png'))
+        openscad_runner.create_image([], Path('magnet_holes_top.png'))
         openscad_runner.camera_arguments = openscad_runner.camera_arguments.with_rotation(CameraRotations.AngledTop)
         openscad_runner.create_image([], Path('plain_magnet_holes_top.png'))
 

@@ -10,3 +10,4 @@ site/
 __pycache__/
 *.py[cod]
 *$py.class
+.mcp-debug-tools/config.json
