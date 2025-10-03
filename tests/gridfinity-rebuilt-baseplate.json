@@ -8,6 +8,8 @@
             "d_screw_head": "5",
             "distancex": "0",
             "distancey": "0",
+            "expansion_mode_x": "both",
+            "expansion_mode_y": "both",
             "chamfer_holes": "true",
             "crush_ribs": "true",
             "enable_magnet": "true",
