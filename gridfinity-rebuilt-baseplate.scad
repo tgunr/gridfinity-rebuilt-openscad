@@ -66,9 +66,9 @@ crush_ribs = true;
 // Magnet holes will have a chamfer to ease insertion.
 chamfer_holes = true;
 // Place magnet holes on the bottom surface
-magnet_holes_bottom = true;
+magnet_holes_top = true;
 // Place magnet holes on the top surface
-magnet_holes_top = false;
+magnet_holes_bottom = false;
 
 // Create hole options based on magnet hole placement selection
 // Create hole options - enable magnet holes if requested
@@ -84,7 +84,7 @@ hole_options = bundle_hole_options(
 // ===== IMPLEMENTATION ===== //
 
 color("tomato")
-gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_bottom, magnet_holes_top);
+gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom);
 
 // ===== CONSTRUCTION ===== //
 
@@ -101,10 +101,10 @@ gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate,
  * @param hole_options
  * @param sh Style of screw hole allowing the baseplate to be mounted to something.
  * @param fit_offset Determines where padding is added.
- * @param magnet_holes_bottom Place magnet holes on bottom surface (default: true)
- * @param magnet_holes_top Place magnet holes on top surface (default: false)
+ * @param magnet_holes_top Place magnet holes on bottom surface (default: true)
+ * @param magnet_holes_bottom Place magnet holes on top surface (default: false)
  */
-module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_options, sh, fit_offset = [0, 0], magnet_holes_bottom = true, magnet_holes_top = false) {
+module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_options, sh, fit_offset = [0, 0], magnet_holes_top = true, magnet_holes_bottom = false) {
 
     assert(is_list(grid_size_bases) && len(grid_size_bases) == 2,
         "grid_size_bases must be a 2d list");
@@ -198,29 +198,29 @@ module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_option
                         // Add holes to the solid baseplates.
                         hole_pattern(){
                             echo("DEBUG - Hole creation conditions:");
-                            echo("  magnet_holes_bottom:", magnet_holes_bottom);
                             echo("  magnet_holes_top:", magnet_holes_top);
+                            echo("  magnet_holes_bottom:", magnet_holes_bottom);
                             echo("  enable_magnet:", enable_magnet);
                             echo("  hole_options:", hole_options);
                             echo("  hole_options[1]:", hole_options[1]);
 
                             // Magnet holes on bottom - create when bottom is requested AND magnet is enabled
-                            if (magnet_holes_bottom && enable_magnet) {
+                            if (magnet_holes_top && enable_magnet) {
                                 echo("  ✓ Creating BOTTOM magnet holes");
                                 translate([0, 0, additional_height+TOLLERANCE])
                                 mirror([0, 0, 1])
                                 block_base_hole(hole_options);
                             } else {
-                                echo("  ✗ Skipping bottom holes (magnet_holes_bottom:", magnet_holes_bottom, "enable_magnet:", enable_magnet, ")");
+                                echo("  ✗ Skipping bottom holes (magnet_holes_top:", magnet_holes_top, "enable_magnet:", enable_magnet, ")");
                             }
 
                             // Magnet holes on top - create when top is requested AND magnet is enabled
-                            if (magnet_holes_top && enable_magnet) {
+                            if (magnet_holes_bottom && enable_magnet) {
                                 echo("  ✓ Creating TOP magnet holes");
                                 translate([0, 0, 0])
                                 block_base_hole(hole_options);
                             } else {
-                                echo("  ✗ Skipping top holes (magnet_holes_top:", magnet_holes_top, "enable_magnet:", enable_magnet, ")");
+                                echo("  ✗ Skipping top holes (magnet_holes_bottom:", magnet_holes_bottom, "enable_magnet:", enable_magnet, ")");
                             }
 
                             translate([0,0,-TOLLERANCE])
