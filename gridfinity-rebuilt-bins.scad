@@ -99,10 +99,12 @@ crush_ribs = true;
 chamfer_holes = true;
 // Magnet/Screw holes will be printed so supports are not needed.
 printable_hole_top = true;
+// Create enclosed magnet cavity with solid bottom layer and hollow walls for pause-and-insert printing.
+enclosed_magnet_cavity = false;
 // Enable "gridfinity-refined" thumbscrew hole in the center of each base: https://www.printables.com/model/413761-gridfinity-refined
 enable_thumbscrew = false;
 
-hole_options = bundle_hole_options(refined_holes, magnet_holes, screw_holes, crush_ribs, chamfer_holes, printable_hole_top);
+hole_options = bundle_hole_options(refined_holes, magnet_holes, screw_holes, crush_ribs, chamfer_holes, printable_hole_top, enclosed_magnet_cavity);
 
 // ===== IMPLEMENTATION ===== //
 
