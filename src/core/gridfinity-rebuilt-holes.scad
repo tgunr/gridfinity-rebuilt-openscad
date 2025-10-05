@@ -282,22 +282,15 @@ module block_base_hole(hole_options, o=0) {
                 // 3. Pause at 2mm, insert magnet
                 // 4. Resume to print solid top layer encasing the magnet
                 
-                // Since this is a NEGATIVE (subtracted from base), we need:
-                // - Bottom layer (0-0.2mm): NO subtraction = solid remains
-                // - Upper layers (0.2-2.4mm): Subtract inner cylinder only = hollow walls remain
+                // Since this is a NEGATIVE (subtracted from base):
+                // We need to subtract the FULL magnet radius, but ONLY above the first layer
+                // This leaves: solid bottom (0-0.2mm) + hollow cavity (0.2-2.4mm)
                 
                 translate([0, 0, LAYER_HEIGHT])
-                difference() {
-                    // Outer cylinder (what gets subtracted)
-                    if(crush_ribs) {
-                        ribbed_cylinder(magnet_radius, magnet_inner_radius, magnet_depth - LAYER_HEIGHT, MAGNET_HOLE_CRUSH_RIB_COUNT);
-                    } else {
-                        cylinder(h = magnet_depth - LAYER_HEIGHT, r=magnet_radius);
-                    }
-                    
-                    // Subtract inner part to leave walls
-                    // Wall thickness = LAYER_HEIGHT (0.2mm)
-                    cylinder(h = magnet_depth, r=magnet_radius - LAYER_HEIGHT);
+                if(crush_ribs) {
+                    ribbed_cylinder(magnet_radius, magnet_inner_radius, magnet_depth - LAYER_HEIGHT, MAGNET_HOLE_CRUSH_RIB_COUNT);
+                } else {
+                    cylinder(h = magnet_depth - LAYER_HEIGHT, r=magnet_radius);
                 }
             } else {
                 // Original behavior: open hole
