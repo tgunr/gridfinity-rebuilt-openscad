@@ -413,17 +413,17 @@ module print_grid(grid) {
     position_bottom_left = grid_get_position_bottom_left(grid);
     position_center = grid_get_position_center(grid);
 
-    echo("print_grid: Grid:");
-    echo("print_grid:   element_count:\t     ", grid_get_element_count(grid));
-    echo("print_grid:   num_elements:\t     ", grid_get_num_elements(grid));
-    echo("print_grid:   element_dimensions:  ", grid_get_element_dimensions(grid));
-    echo("print_grid:   average_element_dimensions:  ", grid_get_average_element_dimensions(grid));
-    echo("print_grid:   raw_dimensions:\t     ", raw_mm);
-    echo("print_grid:   total_dimensions:\t     ", total_mm);
-    echo("print_grid:   is_centered:\t     ", centered);
-    echo("print_grid:   position_bottom_left: ", position_bottom_left);
-    echo("print_grid:   position_center:\t     ", position_center);
-    echo("print_grid:   perimeter:\t     ", grid_get_perimeter(grid));
+    echo("Grid:");
+    echo(str("  element_count:\t     ", grid_get_element_count(grid)));
+    echo(str("  num_elements:\t     ", grid_get_num_elements(grid)));
+    echo(str("  element_dimensions:  ", grid_get_element_dimensions(grid)));
+    echo(str("  average_element_dimensions:  ", grid_get_average_element_dimensions(grid)));
+    echo(str("  raw_dimensions:\t     ", raw_mm));
+    echo(str("  total_dimensions:\t     ", total_mm));
+    echo(str("  is_centered:\t     ", centered));
+    echo(str("  position_bottom_left: ", position_bottom_left));
+    echo(str("  position_center:\t     ", position_center));
+    echo(str("  perimeter:\t     ", grid_get_perimeter(grid)));
 }
 
 /**

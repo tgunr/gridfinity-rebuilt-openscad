@@ -21,54 +21,6 @@ style_plate | { 0, 1, 2 } | the style of baseplate <br>     • (0) thin (minimu
 enable_magnet | boolean | toggle hole for magnet on top
 style_hole | { 0, 1, 2 } | the style of holes underneath the baseplate, if applicable <br>     • (0) none <br>     • (1) countersink <br>     • (2) counterbore
 
-## Magnet Hole Options
-
-The baseplate supports various magnet hole configurations through the `hole_options` parameter. You can customize magnet holes using the `bundle_hole_options()` function:
-
-### Basic Magnet Hole Options
-
-- **magnet_hole**: Enable/disable magnet holes (default: false)
-- **crush_ribs**: Add crush ribs for better magnet retention (default: false)
-- **chamfer**: Add chamfer to hole edges (default: false)
-- **supportless**: Make holes printable without supports (default: false)
-- **enclosed**: Create enclosed magnet holes for print-pause-insert-resume workflow (default: false)
-
-### Enclosed Magnet Holes
-
-The `enclosed` option creates magnet holes with a thin layer (0.3mm) covering the hole, enabling a special 3D printing workflow:
-
-**Magnet Specifications:**
-- **Size**: 6mm diameter × 2mm height (standard cylindrical magnets)
-- **Hole Diameter**: 6.5mm (slightly oversized for easy insertion)
-- **Hole Depth**: 2.4mm (accommodates magnet + tolerance layers)
-
-**Print-Pause-Insert-Resume Workflow:**
-
-1. **Print**: Print the model with enclosed holes - the thin 0.2mm layer will be visible in your slicer preview
-2. **Pause**: Pause the print when the thin layer completes (slicer will show where to pause)
-3. **Insert**: Insert 6×2mm magnets into the holes through the thin layer
-4. **Resume**: Resume printing to enclose/embed the magnets within the model
-
-**Important Notes:**
-- ✅ The thin layer showing in slicer preview is **expected behavior** - this is what you print first
-- ✅ Slicer will show exactly where to pause for magnet insertion
-- ❌ Chamfer is automatically disabled with enclosed holes for better printability
-- ✅ Crush ribs work normally with enclosed holes
-
-**Usage Example:**
-```openscad
-// Create enclosed magnet holes for print-pause-insert workflow
-hole_options = bundle_hole_options(
-    magnet_hole=true,
-    enclosed=true,        // Creates thin layer over hole
-    crush_ribs=true,      // Still works with enclosed holes
-    chamfer=false         // Chamfer disabled with enclosed holes
-);
-
-// Use in baseplate
-gridfinityBaseplate([2, 2], l_grid, [0, 0], 1, hole_options, 0, [0, 0]);
-```
-
 ## Modules
 
 ### gridfinityBaseplate

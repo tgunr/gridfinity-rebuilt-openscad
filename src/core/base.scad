@@ -362,7 +362,7 @@ module base_outer_shell(wall_thickness, bottom_thickness, top_dimensions=BASE_TO
         || bottom_thickness < (wall_thickness - BASE_BOTTOM_RADIUS);
 
     if(_debug)
-        echo("base_outer_shell:",
+        echo(
             optimized_wall=optimized_wall,
             optimized_bottom=optimized_bottom
         );

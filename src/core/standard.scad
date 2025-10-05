@@ -21,13 +21,12 @@ TOLLERANCE = 0.02;
 // ****************************************
 // Magnet / Screw Hole Constants
 // ****************************************
-// Standard magnet dimensions: 6mm diameter x 2mm height
 LAYER_HEIGHT = 0.2;
-MAGNET_HEIGHT = 2;  // Height of standard 6x2mm cylindrical magnets
+MAGNET_HEIGHT = 2;
 
 SCREW_HOLE_RADIUS = 3 / 2;
-MAGNET_HOLE_RADIUS = 6.5 / 2;  // Slightly larger than 6mm magnet for easy insertion
-MAGNET_HOLE_DEPTH = MAGNET_HEIGHT + (LAYER_HEIGHT * 2);  // 2.4mm deep hole for 2mm magnet
+MAGNET_HOLE_RADIUS = 6.5 / 2;
+MAGNET_HOLE_DEPTH = MAGNET_HEIGHT + (LAYER_HEIGHT * 2);
 
 // distance of hole from side of bin
 d_hole_from_side=8;

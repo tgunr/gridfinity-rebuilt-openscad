@@ -372,10 +372,10 @@ function _element_color(element) =
 module print_grid_element(element) {
     assert(is_grid_element(element), "Not a grid element.")
 
-    echo("print_grid_element: grid_element:");
-    echo("print_grid_element:   index:\t    ", grid_element_get_index(element));
-    echo("print_grid_element:   sequence_number:  ", grid_element_get_sequence_number(element));
-    echo("print_grid_element:   position:\t    ", grid_element_get_position(element));
-    echo("print_grid_element:   is_centered:\t    ", grid_element_is_centered(element));
-    echo("print_grid_element:   dimensions:\t    ", grid_element_get_dimensions(element));
+    echo("grid_element:");
+    echo(str("  index:\t    ", grid_element_get_index(element)));
+    echo(str("  sequence_number:  ", grid_element_get_sequence_number(element)));
+    echo(str("  position:\t    ", grid_element_get_position(element)));
+    echo(str("  is_centered:\t    ", grid_element_is_centered(element)));
+    echo(str("  dimensions:\t    ", grid_element_get_dimensions(element)));
 }
