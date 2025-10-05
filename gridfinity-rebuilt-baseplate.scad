@@ -48,6 +48,12 @@ fitx = 0; // [-1:0.1:1]
 // where to align extra space along y
 fity = 0; // [-1:0.1:1]
 
+/* [Directional Expansion] */
+// directional expansion mode for X axis
+expansion_mode_x = "both"; // ["both", "left_only", "right_only"]
+// directional expansion mode for Y axis
+expansion_mode_y = "both"; // ["both", "bottom_only", "top_only"]
+
 
 /* [Styles] */
 
@@ -83,8 +89,14 @@ hole_options = bundle_hole_options(
 
 // ===== IMPLEMENTATION ===== //
 
+// Debug logging for distancex parameter validation
+echo(str("DEBUG distancex - Input value: '", distancex, "' (type: ", type(distancex), ")"));
+echo(str("DEBUG distancex - Numeric value: ", num(distancex)));
+echo(str("DEBUG distancex - Is zero: ", distancex == 0));
+echo(str("DEBUG distancex - fitx interaction: ", fitx));
+
 color("tomato")
-gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom);
+gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom, expansion_mode_x, expansion_mode_y);
 
 // ===== CONSTRUCTION ===== //
 
@@ -100,11 +112,13 @@ gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate,
  * @param sp Baseplate Style
  * @param hole_options
  * @param sh Style of screw hole allowing the baseplate to be mounted to something.
- * @param fit_offset Determines where padding is added.
+ * @param fit_offset Determines where padding is added (used when expansion_mode is "both").
  * @param magnet_holes_top Place magnet holes on bottom surface (default: true)
  * @param magnet_holes_bottom Place magnet holes on top surface (default: false)
+ * @param expansion_mode_x Directional expansion mode for X axis: "both", "left_only", "right_only"
+ * @param expansion_mode_y Directional expansion mode for Y axis: "both", "bottom_only", "top_only"
  */
-module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_options, sh, fit_offset = [0, 0], magnet_holes_top = true, magnet_holes_bottom = false) {
+module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_options, sh, fit_offset = [0, 0], magnet_holes_top = true, magnet_holes_bottom = false, expansion_mode_x = "both", expansion_mode_y = "both") {
 
     assert(is_list(grid_size_bases) && len(grid_size_bases) == 2,
         "grid_size_bases must be a 2d list");
@@ -143,7 +157,21 @@ module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_option
 
     //Convert the fit offset to percent of how much will be added to the positive axes.
     // -1 : 1 -> 0 : 1
-    fit_percent_positive = [for (i = [0:1]) (fit_offset[i] + 1) / 2];
+    // Override with directional expansion modes if specified
+    fit_percent_positive = [
+        expansion_mode_x == "both" ? (fit_offset.x + 1) / 2 :
+        expansion_mode_x == "left_only" ? 0 :
+        expansion_mode_x == "right_only" ? 1 : (fit_offset.x + 1) / 2,
+        expansion_mode_y == "both" ? (fit_offset.y + 1) / 2 :
+        expansion_mode_y == "bottom_only" ? 0 :
+        expansion_mode_y == "top_only" ? 1 : (fit_offset.y + 1) / 2
+    ];
+
+    // Debug logging for fit offset interaction with distancex
+    echo(str("DEBUG distancex - fit_percent_positive: ", fit_percent_positive));
+    echo(str("DEBUG distancex - padding_mm: ", padding_mm));
+    echo(str("DEBUG distancex - padding calculation X: ", padding_mm.x * (1 - fit_percent_positive.x)));
+    echo(str("DEBUG distancex - padding calculation Y: ", padding_mm.y * (1 - fit_percent_positive.y)));
 
     padding_start_point = -grid_size_mm/2 -
         [

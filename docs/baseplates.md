@@ -13,8 +13,10 @@ gridy | { n>=0 \| n∈R } | number of bases along the y-axis<br> If set to zero,
 length | { n>0 \| n∈R } | length of one unit of the base. <br> default: 42 (The Answer to the Ultimate Question of Life, <br>the Universe, and Everything.)
 distancex | { n>0 \| n∈R } | minimum length of baseplate along x <br>alternatively, how large is the drawer along x <br>(leave zero to ignore)
 distancey | { n>0 \| n∈R } | minimum length of baseplate along y <br>alternatively, how large is the drawer along y <br>(leave zero to ignore)
-fitx | { -1<=n<=1 \| n∈R } | alignment factor for extra space along x axis
-fity | { -1<=n<=1 \| n∈R } | alignment factor for extra space along y axis
+fitx | { -1<=n<=1 \| n∈R } | alignment factor for extra space along x axis<br>(used when expansion_mode_x is "both")
+fity | { -1<=n<=1 \| n∈R } | alignment factor for extra space along y axis<br>(used when expansion_mode_y is "both")
+expansion_mode_x | { "both", "left_only", "right_only" } | directional expansion mode for X axis<br>     • "both" - expand equally on both sides (default)<br>     • "left_only" - expand only to the left<br>     • "right_only" - expand only to the right
+expansion_mode_y | { "both", "bottom_only", "top_only" } | directional expansion mode for Y axis<br>     • "both" - expand equally on both sides (default)<br>     • "bottom_only" - expand only downward<br>     • "top_only" - expand only upward
 style_plate | { 0, 1, 2 } | the style of baseplate <br>     • (0) thin (minimum material, only outline) <br>     • (1) weighted (thick with space for tire iron) <br>     • (2) skeletonized (thick, center hollowed)
 enable_magnet | boolean | toggle hole for magnet on top
 style_hole | { 0, 1, 2 } | the style of holes underneath the baseplate, if applicable <br>     • (0) none <br>     • (1) countersink <br>     • (2) counterbore
@@ -25,7 +27,7 @@ style_hole | { 0, 1, 2 } | the style of holes underneath the baseplate, if appli
 
 Generates a baseplate to use with gridfinity bins.
 
-** `gridfinityBaseplate(gridx, gridy, length, distancex, distancey, style_plate, enable_magnet, style_hole)` **
+** `gridfinityBaseplate(gridx, gridy, length, distancex, distancey, style_plate, enable_magnet, style_hole, fitx, fity, expansion_mode_x, expansion_mode_y)` **
 
 Parameter | Range | Description
 --- | ----- | ---
@@ -34,8 +36,10 @@ gridy | { n>=0 \| n∈R } | number of bases along the y-axis<br> If set to zero,
 length | { n>0 \| n∈R } | length of one unit of the base. <br> default: 42 (The Answer to the Ultimate Question of Life, <br>the Universe, and Everything.)
 distancex | { n>0 \| n∈R } | minimum length of baseplate along x <br>alternatively, how large is the drawer along x <br>(leave zero to ignore)
 distancey | { n>0 \| n∈R } | minimum length of baseplate along y <br>alternatively, how large is the drawer along y <br>(leave zero to ignore)
-fitx | { -1<=n<=1 \| n∈R } | alignment factor for extra space along x axis
-fity | { -1<=n<=1 \| n∈R } | alignment factor for extra space along y axis
+fitx | { -1<=n<=1 \| n∈R } | alignment factor for extra space along x axis<br>(used when expansion_mode_x is "both")
+fity | { -1<=n<=1 \| n∈R } | alignment factor for extra space along y axis<br>(used when expansion_mode_y is "both")
+expansion_mode_x | { "both", "left_only", "right_only" } | directional expansion mode for X axis<br>     • "both" - expand equally on both sides (default)<br>     • "left_only" - expand only to the left<br>     • "right_only" - expand only to the right
+expansion_mode_y | { "both", "bottom_only", "top_only" } | directional expansion mode for Y axis<br>     • "both" - expand equally on both sides (default)<br>     • "bottom_only" - expand only downward<br>     • "top_only" - expand only upward
 style_plate | { 0, 1, 2 } | the style of baseplate <br>     • (0) thin (minimum material, only outline) <br>     • (1) weighted (thick with space for tire iron) <br>     • (2) skeletonized (thick, center hollowed)
 enable_magnet | boolean | toggle hole for magnet on top
 style_hole | { 0, 1, 2 } | the style of holes underneath the baseplate, if applicable <br>     • (0) none <br>     • (1) countersink <br>     • (2) counterbore
