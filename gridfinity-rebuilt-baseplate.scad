@@ -71,6 +71,8 @@ enable_magnet = true;
 crush_ribs = true;
 // Magnet holes will have a chamfer to ease insertion.
 chamfer_holes = true;
+// Create enclosed magnet cavity with solid bottom layer and hollow walls for pause-and-insert printing.
+enclosed_magnet_cavity = false;
 // Place magnet holes on the bottom surface
 magnet_holes_top = true;
 // Place magnet holes on the top surface
@@ -84,7 +86,8 @@ hole_options = bundle_hole_options(
     screw_hole=false,
     crush_ribs=crush_ribs,
     chamfer=chamfer_holes,
-    supportless=false
+    supportless=false,
+    enclosed_magnet=enclosed_magnet_cavity
 );
 
 // ===== IMPLEMENTATION ===== //

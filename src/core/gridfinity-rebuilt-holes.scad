@@ -201,17 +201,25 @@ module screw_hole(radius, height, supportless=false, chamfer_radius=0, chamfer_a
  * @param crush_ribs If the magnet hole should have crush ribs for a press fit.
  * @param chamfer Add a chamfer to the magnet/screw hole.
  * @param supportless If the magnet/screw hole should be printed in such a way that the screw hole does not require supports.
+ * @param enclosed_magnet Create an enclosed magnet cavity with solid bottom layer and hollow walls for pause-and-insert printing.
  */
-function bundle_hole_options(refined_hole=false, magnet_hole=false, screw_hole=false, crush_ribs=false, chamfer=false, supportless=false) =
+function bundle_hole_options(refined_hole=false, magnet_hole=false, screw_hole=false, crush_ribs=false, chamfer=false, supportless=false, enclosed_magnet=false) =
     assert(is_bool(refined_hole))
     assert(is_bool(magnet_hole))
     assert(is_bool(screw_hole))
     assert(is_bool(crush_ribs))
     assert(is_bool(chamfer))
     assert(is_bool(supportless))
+    assert(is_bool(enclosed_magnet))
     assert(!refined_hole
         || (refined_hole && !magnet_hole),
     "magnet_hole is not compatible with refined_hole")
+    assert(!enclosed_magnet
+        || (enclosed_magnet && magnet_hole),
+    "enclosed_magnet requires magnet_hole to be true")
+    assert(!enclosed_magnet
+        || (enclosed_magnet && !supportless),
+    "enclosed_magnet is not compatible with supportless")
     [
         "hole_options_struct",
         refined_hole,
@@ -219,7 +227,8 @@ function bundle_hole_options(refined_hole=false, magnet_hole=false, screw_hole=f
         screw_hole,
         crush_ribs,
         chamfer,
-        supportless
+        supportless,
+        enclosed_magnet
     ];
 
 /**
@@ -228,7 +237,7 @@ function bundle_hole_options(refined_hole=false, magnet_hole=false, screw_hole=f
  */
 function is_hole_options(hole_options) =
     is_list(hole_options)
-    && len(hole_options) == 7
+    && (len(hole_options) == 7 || len(hole_options) == 8)
     && hole_options[0] == "hole_options_struct";
 
 /**
@@ -248,6 +257,7 @@ module block_base_hole(hole_options, o=0) {
     crush_ribs = hole_options[4];
     chamfer = hole_options[5];
     supportless = hole_options[6];
+    enclosed_magnet = len(hole_options) > 7 ? hole_options[7] : false;
 
     screw_radius = SCREW_HOLE_RADIUS - (o/2);
     magnet_radius = MAGNET_HOLE_RADIUS - (o/2);
@@ -264,16 +274,37 @@ module block_base_hole(hole_options, o=0) {
         }
 
         if(magnet_hole) {
-            difference() {
+            if(enclosed_magnet) {
+                // Create enclosed cavity: solid bottom layer + hollow cylinder walls
+                // This allows pause-and-insert printing:
+                // 1. Print solid first layer (0-0.2mm) - NO HOLE
+                // 2. Print hollow walls (0.2-2.4mm) - HOLLOW CYLINDER
+                // 3. Pause at 2mm, insert magnet
+                // 4. Resume to print solid top layer encasing the magnet
+                
+                // Since this is a NEGATIVE (subtracted from base):
+                // We need to subtract the FULL magnet radius, but ONLY above the first layer
+                // This leaves: solid bottom (0-0.2mm) + hollow cavity (0.2-2.4mm)
+                
+                translate([0, 0, LAYER_HEIGHT])
                 if(crush_ribs) {
-                    ribbed_cylinder(magnet_radius, magnet_inner_radius, magnet_depth, MAGNET_HOLE_CRUSH_RIB_COUNT);
+                    ribbed_cylinder(magnet_radius, magnet_inner_radius, magnet_depth - LAYER_HEIGHT, MAGNET_HOLE_CRUSH_RIB_COUNT);
                 } else {
-                    cylinder(h = magnet_depth, r=magnet_radius);
+                    cylinder(h = magnet_depth - LAYER_HEIGHT, r=magnet_radius);
                 }
+            } else {
+                // Original behavior: open hole
+                difference() {
+                    if(crush_ribs) {
+                        ribbed_cylinder(magnet_radius, magnet_inner_radius, magnet_depth, MAGNET_HOLE_CRUSH_RIB_COUNT);
+                    } else {
+                        cylinder(h = magnet_depth, r=magnet_radius);
+                    }
 
-                if(supportless) {
-                    make_hole_printable(
-                    screw_hole ? screw_radius : 1, magnet_radius, magnet_depth, supportless_additional_layers);
+                    if(supportless) {
+                        make_hole_printable(
+                        screw_hole ? screw_radius : 1, magnet_radius, magnet_depth, supportless_additional_layers);
+                    }
                 }
             }
 
