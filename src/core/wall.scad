@@ -281,7 +281,7 @@ module visualize_line(line, print=false) {
 
     if(print) {
         for(i=[0:len(final_points)-1]) {
-            echo(str(i, ":", final_points[i]));
+            echo("visualize_line: ", str(i, ":", final_points[i]));
         }
     }
     polygon(final_points);

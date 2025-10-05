@@ -66,11 +66,14 @@ style_hole = 0; // [0:none, 1:countersink, 2:counterbore]
 
 /* [Magnet Hole] */
 // Baseplate will have holes for 6mm Diameter x 2mm high magnets.
+// Enclosed holes create a thin layer for print-pause-insert-resume workflow.
 enable_magnet = true;
 // Magnet holes will have crush ribs to hold the magnet.
 crush_ribs = true;
 // Magnet holes will have a chamfer to ease insertion.
 chamfer_holes = true;
+// Create enclosed magnet holes for print-pause-insert-resume workflow.
+enclosed_holes = false;
 // Place magnet holes on the bottom surface
 magnet_holes_top = true;
 // Place magnet holes on the top surface
@@ -84,7 +87,8 @@ hole_options = bundle_hole_options(
     screw_hole=false,
     crush_ribs=crush_ribs,
     chamfer=chamfer_holes,
-    supportless=false
+    supportless=false,
+    enclosed=enclosed_holes  // NEW: Enable enclosed magnet holes
 );
 
 // ===== IMPLEMENTATION ===== //
@@ -96,7 +100,7 @@ echo(str("DEBUG distancex - Is zero: ", distancex == 0));
 echo(str("DEBUG distancex - fitx interaction: ", fitx));
 
 color("tomato")
-gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom, expansion_mode_x, expansion_mode_y);
+gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate, hole_options, style_hole, [fitx, fity], magnet_holes_top, magnet_holes_bottom, enclosed_holes, expansion_mode_x, expansion_mode_y);
 
 // ===== CONSTRUCTION ===== //
 
@@ -115,10 +119,11 @@ gridfinityBaseplate([gridx, gridy], l_grid, [distancex, distancey], style_plate,
  * @param fit_offset Determines where padding is added (used when expansion_mode is "both").
  * @param magnet_holes_top Place magnet holes on bottom surface (default: true)
  * @param magnet_holes_bottom Place magnet holes on top surface (default: false)
+ * @param enclosed_holes Create enclosed magnet holes for print-pause-insert-resume workflow (default: false)
  * @param expansion_mode_x Directional expansion mode for X axis: "both", "left_only", "right_only"
  * @param expansion_mode_y Directional expansion mode for Y axis: "both", "bottom_only", "top_only"
  */
-module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_options, sh, fit_offset = [0, 0], magnet_holes_top = true, magnet_holes_bottom = false, expansion_mode_x = "both", expansion_mode_y = "both") {
+module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_options, sh, fit_offset = [0, 0], magnet_holes_top = false, magnet_holes_bottom = true, enclosed_holes = true, expansion_mode_x = "both", expansion_mode_y = "both") {
 
     assert(is_list(grid_size_bases) && len(grid_size_bases) == 2,
         "grid_size_bases must be a 2d list");
@@ -187,13 +192,13 @@ module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_option
         padding_start_point + [size_mm.x, 0, 0],
     ];
 
-    echo(str("Number of Grids per axes (X, Y)]: ", grid_size));
-    echo(str("Final size (in mm): ", size_mm));
+    echo("gridfinityBaseplate: Number of Grids per axes (X, Y)]: ", grid_size);
+    echo("gridfinityBaseplate: Final size (in mm): ", size_mm);
     if (is_padding_needed) {
-        echo(str("Padding +X (in mm): ", padding_mm.x * fit_percent_positive.x));
-        echo(str("Padding -X (in mm): ", padding_mm.x * (1 - fit_percent_positive.x)));
-        echo(str("Padding +Y (in mm): ", padding_mm.y * fit_percent_positive.y));
-        echo(str("Padding -Y (in mm): ", padding_mm.y * (1 - fit_percent_positive.y)));
+        echo("gridfinityBaseplate: Padding +X (in mm): ", padding_mm.x * fit_percent_positive.x);
+        echo("gridfinityBaseplate: Padding -X (in mm): ", padding_mm.x * (1 - fit_percent_positive.x));
+        echo("gridfinityBaseplate: Padding +Y (in mm): ", padding_mm.y * fit_percent_positive.y);
+        echo("gridfinityBaseplate: Padding -Y (in mm): ", padding_mm.y * (1 - fit_percent_positive.y));
     }
 
     screw_together = sp == 3 || sp == 4;
@@ -225,30 +230,30 @@ module gridfinityBaseplate(grid_size_bases, length, min_size_mm, sp, hole_option
 
                         // Add holes to the solid baseplates.
                         hole_pattern(){
-                            echo("DEBUG - Hole creation conditions:");
-                            echo("  magnet_holes_top:", magnet_holes_top);
-                            echo("  magnet_holes_bottom:", magnet_holes_bottom);
-                            echo("  enable_magnet:", enable_magnet);
-                            echo("  hole_options:", hole_options);
-                            echo("  hole_options[1]:", hole_options[1]);
+                            echo("gridfinityBaseplate: DEBUG - Hole creation conditions:");
+                            echo("gridfinityBaseplate:   magnet_holes_top:", magnet_holes_top);
+                            echo("gridfinityBaseplate:   magnet_holes_bottom:", magnet_holes_bottom);
+                            echo("gridfinityBaseplate:   enable_magnet:", enable_magnet);
+                            echo("gridfinityBaseplate:   hole_options:", hole_options);
+                            echo("gridfinityBaseplate:   hole_options[1]:", hole_options[1]);
 
                             // Magnet holes on bottom - create when bottom is requested AND magnet is enabled
                             if (magnet_holes_top && enable_magnet) {
-                                echo("  ✓ Creating BOTTOM magnet holes");
+                                echo("gridfinityBaseplate:   ✓ Creating BOTTOM magnet holes");
                                 translate([0, 0, additional_height+TOLLERANCE])
                                 mirror([0, 0, 1])
                                 block_base_hole(hole_options);
                             } else {
-                                echo("  ✗ Skipping bottom holes (magnet_holes_top:", magnet_holes_top, "enable_magnet:", enable_magnet, ")");
+                                echo("gridfinityBaseplate:   ✗ Skipping bottom holes (magnet_holes_top:", magnet_holes_top, "enable_magnet:", enable_magnet, ")");
                             }
 
                             // Magnet holes on top - create when top is requested AND magnet is enabled
                             if (magnet_holes_bottom && enable_magnet) {
-                                echo("  ✓ Creating TOP magnet holes");
+                                echo("gridfinityBaseplate:   ✓ Creating TOP magnet holes");
                                 translate([0, 0, 0])
                                 block_base_hole(hole_options);
                             } else {
-                                echo("  ✗ Skipping top holes (magnet_holes_bottom:", magnet_holes_bottom, "enable_magnet:", enable_magnet, ")");
+                                echo("gridfinityBaseplate:   ✗ Skipping top holes (magnet_holes_bottom:", magnet_holes_bottom, "enable_magnet:", enable_magnet, ")");
                             }
 
                             translate([0,0,-TOLLERANCE])
@@ -315,7 +320,7 @@ module cutter_weight() {
 module hole_pattern(){
     pattern_circular(4)
     translate([l_grid/2-d_hole_from_side, l_grid/2-d_hole_from_side, 0]) {
-        echo("HOLE_PATTERN: Creating hole at position:", [l_grid/2-d_hole_from_side, l_grid/2-d_hole_from_side]);
+        echo("hole_pattern: Creating hole at position:", [l_grid/2-d_hole_from_side, l_grid/2-d_hole_from_side]);
         render();
         children();
     }

@@ -10,7 +10,8 @@ test_options_magnet_bottom_only = bundle_hole_options(
     screw_hole=false,
     crush_ribs=true,
     chamfer=false,
-    supportless=false
+    supportless=false,
+    enclosed=false
 );
 
 test_options_magnet_top_only = bundle_hole_options(
@@ -19,7 +20,8 @@ test_options_magnet_top_only = bundle_hole_options(
     screw_hole=false,
     crush_ribs=true,
     chamfer=false,
-    supportless=false
+    supportless=false,
+    enclosed=false
 );
 
 test_options_magnet_both = bundle_hole_options(
@@ -28,7 +30,29 @@ test_options_magnet_both = bundle_hole_options(
     screw_hole=false,
     crush_ribs=true,
     chamfer=false,
-    supportless=false
+    supportless=false,
+    enclosed=false
+);
+
+// NEW: Test configurations for enclosed magnet holes
+test_options_enclosed_bottom_only = bundle_hole_options(
+    refined_hole=false,
+    magnet_hole=true,
+    screw_hole=false,
+    crush_ribs=true,
+    chamfer=false,
+    supportless=false,
+    enclosed=true  // NEW: Creates thin layer over magnet hole
+);
+
+test_options_enclosed_top_only = bundle_hole_options(
+    refined_hole=false,
+    magnet_hole=true,
+    screw_hole=false,
+    crush_ribs=true,
+    chamfer=false,
+    supportless=false,
+    enclosed=true  // NEW: Creates thin layer over magnet hole
 );
 
 // Test 1: Bottom only placement (default behavior - backward compatibility)
@@ -111,6 +135,45 @@ module test_lite_magnet_both() {
     );
 }
 
+// NEW: Test enclosed magnet holes
+module test_enclosed_bottom_only() {
+    echo("Testing enclosed magnet holes - BOTTOM ONLY");
+    translate([75, 0, 0]) {
+        gridfinityBase(
+            grid_size = [2, 2],
+            hole_options = test_options_enclosed_bottom_only,
+            magnet_holes_top = true,
+            magnet_holes_bottom = false
+        );
+    }
+}
+
+module test_enclosed_top_only() {
+    echo("Testing enclosed magnet holes - TOP ONLY");
+    translate([100, 0, 0]) {
+        gridfinityBase(
+            grid_size = [2, 2],
+            hole_options = test_options_enclosed_top_only,
+            magnet_holes_top = false,
+            magnet_holes_bottom = true
+        );
+    }
+}
+
+module test_lite_enclosed_bottom_only() {
+    echo("Testing lite enclosed magnet holes - BOTTOM ONLY");
+    translate([75, 25, 0]) {
+        gridfinity_base_lite(
+            grid_size = [2, 2],
+            wall_thickness = 1.2,
+            bottom_thickness = 2.0,
+            hole_options = test_options_enclosed_bottom_only,
+            magnet_holes_top = true,
+            magnet_holes_bottom = false
+        );
+    }
+}
+
 // Run all tests
 test_magnet_bottom_only();
 // translate([25, 0, 0]) test_magnet_top_only();
@@ -119,3 +182,8 @@ test_magnet_bottom_only();
 // translate([25, 25, 0]) test_lite_magnet_bottom_only();
 // translate([50, 25, 0]) test_lite_magnet_top_only();
 // translate([0, 50, 0]) test_lite_magnet_both();
+
+// NEW: Test enclosed magnet holes
+// translate([75, 0, 0]) test_enclosed_bottom_only();
+// translate([100, 0, 0]) test_enclosed_top_only();
+// translate([75, 25, 0]) test_lite_enclosed_bottom_only();

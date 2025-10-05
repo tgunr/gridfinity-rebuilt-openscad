@@ -151,13 +151,13 @@ function is_positive(vector) =
  */
 module pprint(object) {
     if(is_list(object) && len(object) != len([for(i=object)each i])) {
-        echo("[");
+        echo("pprint: [");
         for(i = object) {
-            echo(i);
+            echo("pprint: ", i);
         };
-        echo("]");
+        echo("pprint: ]");
     } else {
-        echo(object);
+        echo("pprint: ", object);
     }
 }
 

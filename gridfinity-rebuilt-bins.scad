@@ -90,6 +90,7 @@ only_corners = false;
 //Use gridfinity refined hole style. Not compatible with magnet_holes!
 refined_holes = true;
 // Base will have holes for 6mm Diameter x 2mm high magnets.
+// Use enclosed_holes for print-pause-insert-resume workflow.
 magnet_holes = false;
 // Base will have holes for M3 screws.
 screw_holes = false;
@@ -97,12 +98,14 @@ screw_holes = false;
 crush_ribs = true;
 // Magnet/Screw holes will have a chamfer to ease insertion.
 chamfer_holes = true;
+// Create enclosed magnet holes for print-pause-insert-resume workflow.
+enclosed_holes = false;
 // Magnet/Screw holes will be printed so supports are not needed.
 printable_hole_top = true;
 // Enable "gridfinity-refined" thumbscrew hole in the center of each base: https://www.printables.com/model/413761-gridfinity-refined
 enable_thumbscrew = false;
 
-hole_options = bundle_hole_options(refined_holes, magnet_holes, screw_holes, crush_ribs, chamfer_holes, printable_hole_top);
+hole_options = bundle_hole_options(refined_holes, magnet_holes, screw_holes, crush_ribs, chamfer_holes, printable_hole_top, enclosed_holes);
 
 // ===== IMPLEMENTATION ===== //
 
